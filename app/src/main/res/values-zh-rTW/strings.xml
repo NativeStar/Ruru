@@ -26,4 +26,10 @@
         <item>已開啓usb調試</item>
         <item>已鏈接VPN服務/HTTP代理</item>
     </string-array>
+    <string name="sheet_add_package">添加程式</string>
+    <string name="sheet_helper_text">點擊包名以移除 重啓后生效</string>
+    <string name="dialog_add_package">添加應用</string>
+    <string name="input_package_name_hint">目標應用包名</string>
+    <string name="text_cancel">取消</string>
+    <string name="text_add">添加</string>
 </resources>

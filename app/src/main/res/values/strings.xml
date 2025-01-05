@@ -26,4 +26,10 @@
         <item>Debugging mode is enabled</item>
         <item>VPN Connected/HTTP Proxy</item>
     </string-array>
+    <string name="sheet_add_package">Add Package</string>
+    <string name="sheet_helper_text">Click to remove progrem</string>
+    <string name="dialog_add_package">Add Package</string>
+    <string name="input_package_name_hint">Target package name</string>
+    <string name="text_cancel">Cancel</string>
+    <string name="text_add">Add</string>
 </resources>

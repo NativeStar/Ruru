@@ -3,13 +3,27 @@ package com.byxiaorun.detector
 import android.accessibilityservice.AccessibilityServiceInfo
 import android.accounts.Account
 import android.accounts.AccountManager
+import android.app.AlertDialog
+import android.app.Dialog
+import android.content.Context
 import android.content.Context.CONNECTIVITY_SERVICE
+import android.content.DialogInterface
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.view.accessibility.AccessibilityManager
+import android.widget.AdapterView
+import android.widget.AdapterView.OnItemClickListener
+import android.widget.ArrayAdapter
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ListView
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
@@ -18,6 +32,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.outlined.EmojiObjects
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -30,22 +46,25 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.RecyclerView
 import com.byxiaorun.detector.BuildConfig
 import com.byxiaorun.detector.MyApplication.Companion.accountList
 import com.byxiaorun.detector.MyApplication.Companion.appContext
+import com.byxiaorun.detector.MyApplication.Companion.topActivity
 import com.byxiaorun.detector.MyApplication.Companion.vpn_connect
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import icu.nullptr.applistdetector.MainPage
 import icu.nullptr.applistdetector.theme.MyTheme
 import java.io.*
 import java.net.NetworkInterface
 import java.util.*
-
+import kotlin.collections.HashSet
 
 /**
  *Created by byxiaorun on 2022/4/20/0020.
  */
 class MainActivity : ComponentActivity() {
-
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,7 +91,18 @@ class MainActivity : ComponentActivity() {
 @Composable
 private fun MainTopBar() {
     CenterAlignedTopAppBar(
-        title = { Text(stringResource(id = R.string.app_name) +" V${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})") }
+        title = {
+            Text(stringResource(id = R.string.app_name)) },
+        actions ={
+            IconButton(onClick = {
+                showCustomTargetSheet()
+            }) {
+                Icon(
+                     imageVector = Icons.Filled.Edit,
+                     contentDescription = "list setting"
+                )
+            }
+        }
     )
 }
 
@@ -100,11 +130,11 @@ private fun AboutDialog(onDismiss: () -> Unit) {
             Column(horizontalAlignment = Alignment.Start) {
                 CompositionLocalProvider(LocalTextStyle provides MaterialTheme.typography.bodyLarge) {
                     Text(stringResource(R.string.app_name) +" V${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})")
-                    Text(stringResource(R.string.authored) +": Nullptr & byxiaorun")
+                    Text(stringResource(R.string.authored) +": Nullptr & byxiaorun & NativeStar")
                 }
                 Spacer(Modifier.height(10.dp))
                 val annotatedString = buildAnnotatedString {
-                    pushStringAnnotation("GitHub", "https://github.com/byxiaorun/ApplistDetector/tree/new")
+                    pushStringAnnotation("GitHub", "https://github.com/NativeStar/Ruru")
                     withStyle(SpanStyle(color = MaterialTheme.colorScheme.primary)) {
                         append(appContext.getString(R.string.source))
                     }
@@ -202,8 +232,44 @@ private fun getFromSettingsSecure():List<String> {
     }
 
 }
-
-
+fun showCustomTargetSheet(){
+    val sheet=BottomSheetDialog(topActivity)
+    sheet.setTitle("debug")
+    //显示列表
+    val contentView=LayoutInflater.from(appContext).inflate(R.layout.package_list_layout,null);
+    val listView = contentView.findViewById<ListView>(R.id.packageList)
+    val pref= appContext.getSharedPreferences("custom_list",Context.MODE_PRIVATE)
+    val list=pref.getStringSet("list",HashSet<String>())?.toMutableList()
+    listView.adapter= ArrayAdapter(appContext,android.R.layout.simple_list_item_1,list!!)
+    listView.setOnItemClickListener(object:OnItemClickListener{
+        override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+            val pkgName=list[position] as String
+            list.remove(pkgName)
+            //保存
+            pref.edit().putStringSet("list",java.util.HashSet(list)).apply()
+            (listView.adapter as ArrayAdapter<String>).notifyDataSetChanged()
+        }
+    })
+    contentView.findViewById<Button>(R.id.add_package_button).setOnClickListener {
+        val textInput = EditText(appContext)
+        textInput.hint = appContext.getString(R.string.input_package_name_hint)
+        AlertDialog.Builder(topActivity)
+            .setTitle(MyApplication.Companion.appContext.getString(R.string.dialog_add_package))
+            .setView(textInput)
+            .setNeutralButton(appContext.getString(R.string.text_cancel), null)
+            .setPositiveButton(appContext.getString(R.string.text_add), object : DialogInterface.OnClickListener {
+                override fun onClick(dialog: DialogInterface?, which: Int) {
+                    val textRaw=textInput.text.toString()
+                    if (textRaw.isBlank()) return
+                    list.add(list.size,textRaw)
+                    pref.edit().putStringSet("list",java.util.HashSet(list)).apply()
+                    (listView.adapter as ArrayAdapter<String>).notifyDataSetChanged()
+                }
+            }).show()
+    }
+    sheet.setContentView(contentView)
+    sheet.show()
+}
 
 fun checkSetting() {
     if((Settings.Secure.getInt(appContext.contentResolver,Settings.Global.DEVELOPMENT_SETTINGS_ENABLED,0)==1)){ MyApplication.development_enable=true }

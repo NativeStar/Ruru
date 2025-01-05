@@ -19,7 +19,7 @@ val javaVer: JavaVersion by rootProject.extra
 
 android {
     compileSdk = compileSdkVer
-    ndkVersion = ndkVer
+    ndkVersion = "27.0.12077973"
 
     buildFeatures {
         compose = true
@@ -27,7 +27,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.byxiaorun.detector"
+        applicationId = "com.suisho.rc"
         minSdk = minSdkVer
         targetSdk = targetSdkVer
         versionCode = verCode
@@ -59,8 +59,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = javaVer
-        targetCompatibility = javaVer
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
 
     kotlinOptions {

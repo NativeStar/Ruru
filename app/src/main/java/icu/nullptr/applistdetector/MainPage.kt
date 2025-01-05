@@ -1,5 +1,7 @@
 package icu.nullptr.applistdetector
 
+import android.content.Context
+import android.content.SharedPreferences
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.rememberScrollState
@@ -21,7 +23,7 @@ import icu.nullptr.applistdetector.component.CheckCard
 import icu.nullptr.applistdetector.component.IconHintCard
 import kotlinx.coroutines.*
 
-val basicAppList = listOf(
+val basicAppList = mutableListOf(
     "com.topjohnwu.magisk",
     "io.github.vvb2060.magisk",
     "io.github.vvb2060.magisk.lite",
@@ -32,23 +34,35 @@ val basicAppList = listOf(
     "me.weishu.exp",
     "com.tsng.hidemyapplist",
     "cn.geektang.privacyspace",
-    "moe.shizuku.redirectstorage"
+    "moe.shizuku.redirectstorage",
+    //应该就这些
+    "me.weishu.kernelsu",
+    "me.bmax.apatch",
+    "io.github.huskydg.magisk"
 )
 
 val snapShotList = mutableStateListOf<Triple<IDetector, IDetector.Result?, Detail?>>(
     Triple(AbnormalEnvironment(appContext, gettext("abnormal")[0]), null, null),
-    Triple(PMCommand(appContext,gettext("pmc")[0]), null, null),
-    Triple(PMConventionalAPIs(appContext,gettext("pmca")[0]), null, null),
-    Triple(PMSundryAPIs(appContext,gettext("pmsa")[0]), null, null),
-    Triple(PMQueryIntentActivities(appContext,gettext("pmiq")[0]), null, null),
-    Triple(FileDetection(appContext, false,"Libc "+gettext("filedet")[0]), null, null),
-    Triple(FileDetection(appContext, true,"Syscall "+gettext("filedet")[0]), null, null),
+    Triple(PMCommand(appContext, gettext("pmc")[0]), null, null),
+    Triple(PMConventionalAPIs(appContext, gettext("pmca")[0]), null, null),
+    Triple(PMSundryAPIs(appContext, gettext("pmsa")[0]), null, null),
+    Triple(PMQueryIntentActivities(appContext, gettext("pmiq")[0]), null, null),
+    Triple(FileDetection(appContext, false, "Libc " + gettext("filedet")[0]), null, null),
+    Triple(FileDetection(appContext, true, "Syscall " + gettext("filedet")[0]), null, null),
 //    Triple(StatFile(appContext," StatFile "+gettext("filedet")), null, null),
-    Triple(XposedModules(appContext,gettext("xposed")[0],false), null, null),
-    Triple(XposedModules(appContext,gettext("lspatch")[0],true), null, null),
-    Triple(MagiskApp(appContext,gettext("magisk")[0]), null, null),
-    Triple(Accessibility(appContext,accList, accenable,gettext("accessibility")[0]), null, null),
-    Triple(SettingProp(appContext, development_enable, adbenable,vpn_connect,gettext("settingprops")), null, null),
+    Triple(XposedModules(appContext, gettext("xposed")[0], false), null, null),
+    Triple(XposedModules(appContext, gettext("lspatch")[0], true), null, null),
+    Triple(MagiskApp(appContext, gettext("magisk")[0]), null, null),
+    Triple(Accessibility(appContext, accList, accenable, gettext("accessibility")[0]), null, null),
+    Triple(
+        SettingProp(
+            appContext,
+            development_enable,
+            adbenable,
+            vpn_connect,
+            gettext("settingprops")
+        ), null, null
+    ),
     Triple(Account(appContext, accountList, gettext("account")[0]), null, null),
 )
 
@@ -63,6 +77,12 @@ suspend fun runDetector(id: Int, packages: Collection<String>?) {
 @Composable
 fun MainPage(modifier: Modifier) {
     LaunchedEffect(appContext) {
+        //加载自定义
+        val preferences = appContext.getSharedPreferences("custom_list", Context.MODE_PRIVATE)
+        val customApplications = preferences.getStringSet("list", HashSet())
+        customApplications?.forEach {
+            basicAppList.add(basicAppList.size, it)
+        }
         runDetector(0, null)
         for (i in 1..6) runDetector(i, basicAppList)
         for (i in 7..12) runDetector(i, null)

@@ -12,7 +12,7 @@ plugins {
 android {
     namespace = "icu.nullptr.applistdetector.library"
     compileSdk = compileSdkVer
-    ndkVersion = ndkVer
+    ndkVersion = "27.0.12077973"
 
     buildFeatures {
         prefab = true
@@ -40,8 +40,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = javaVer
-        targetCompatibility = javaVer
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
 
     kotlinOptions {

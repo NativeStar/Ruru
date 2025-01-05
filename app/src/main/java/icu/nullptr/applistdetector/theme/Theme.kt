@@ -77,7 +77,7 @@ fun MyTheme(
     isDarkTheme: Boolean = isSystemInDarkTheme(),
     enableDynamicColor: Boolean = true,
     content: @Composable () -> Unit
-) {
+){
     val colorScheme = when {
         enableDynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current

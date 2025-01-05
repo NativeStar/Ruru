@@ -38,6 +38,8 @@ class AbnormalEnvironment(
         add(Pair("Xposed Edge", detectFile("/data/system/xedge")))
         add(Pair("Riru Clipboard", detectFile("/data/misc/clipboard")))
         add(Pair("privacyspace", detectFile("/data/system/cn.geektang.privacyspace")))
+        //Shizuku激活过产生的文件
+        add(Pair("Shizuku File",detectFile("/data/local/tmp/shizuku")))
         var sufilenum=0
         var busyboxnum=0
         var magisknum=0
