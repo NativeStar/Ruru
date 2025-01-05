@@ -29,7 +29,6 @@ Kotlin是真的难 Jetpack也是一窍不通
 
 代码改的稀巴烂 不喜勿喷
 
-而且不知道为啥 跟原版比起来真的好卡啊 但懒得排查了
 ### 第三方开源引用
 ##### Apache License 2.0
 [vvb2060/XposedDetector](https://github.com/vvb2060/XposedDetector)
