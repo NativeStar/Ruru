@@ -5,6 +5,7 @@ plugins {
     kotlin("android")
 }
 
+
 val properties = Properties()
 properties.load(rootProject.file("local.properties").inputStream())
 
@@ -66,8 +67,8 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
-}
 
+}
 dependencies {
     implementation(project(":library"))
 
@@ -78,4 +79,6 @@ dependencies {
     implementation("androidx.compose.ui:ui:1.2.1")
     implementation("androidx.compose.ui:ui-tooling:1.2.1")
     implementation("com.google.android.material:material:1.6.1")
+
+    implementation("com.github.Tencent.soter:soter-wrapper:2.1.8")
 }

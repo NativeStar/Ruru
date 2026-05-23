@@ -13,9 +13,13 @@ import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
+<<<<<<< HEAD
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+=======
+import android.util.Log
+>>>>>>> upstream/new
 import android.view.accessibility.AccessibilityManager
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemClickListener
@@ -286,19 +290,21 @@ fun checkSetting() {
 
 
 fun Accounts() {
-    try{
-        accountList= listOf()
+    try {
+        accountList = listOf()
         val accounts = AccountManager.get(appContext).getAccounts()
-        var mutableList: MutableList<String> = mutableListOf()
-        if (accounts.size>0) {
+        val mutableList: MutableList<String> = mutableListOf()
+
+        if (accounts.isNotEmpty()) {
             for (account in accounts) {
-                val accounttype = account.type
-                val accountname = account.name
-                mutableList.add(accounttype + ", " + accountname).toString()
+                val accountType = account.type
+                val accountName = account.name
+                mutableList.add("$accountType, $accountName")
             }
             accountList = mutableList.toList()
         }
-    }catch (e:IOException) {
-
+    } catch (e: Exception) {
+        Log.e("Accounts", "Error while retrieving accounts: ${e.message}", e)
+        accountList = listOf()
     }
 }
