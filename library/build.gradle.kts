@@ -1,3 +1,5 @@
+import org.gradle.api.JavaVersion
+
 val minSdkVer: Int by rootProject.extra
 val targetSdkVer: Int by rootProject.extra
 val compileSdkVer: Int by rootProject.extra

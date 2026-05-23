@@ -80,5 +80,5 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling:1.2.1")
     implementation("com.google.android.material:material:1.6.1")
 
-    implementation("com.github.Tencent.soter:soter-wrapper:2.1.8")
+//    implementation("com.github.Tencent.soter:soter-wrapper:2.1.8")
 }

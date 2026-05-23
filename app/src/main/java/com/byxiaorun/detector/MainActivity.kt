@@ -13,13 +13,10 @@ import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
-<<<<<<< HEAD
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-=======
 import android.util.Log
->>>>>>> upstream/new
 import android.view.accessibility.AccessibilityManager
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemClickListener
