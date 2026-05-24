@@ -32,4 +32,5 @@
     <string name="input_package_name_hint">Target package name</string>
     <string name="text_cancel">Cancel</string>
     <string name="text_add">Add</string>
+    <string name="zcd">Zero Width Character Detect</string>
 </resources>

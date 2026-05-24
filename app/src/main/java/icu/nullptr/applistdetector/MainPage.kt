@@ -35,10 +35,13 @@ val basicAppList = mutableListOf(
     "com.tsng.hidemyapplist",
     "cn.geektang.privacyspace",
     "moe.shizuku.redirectstorage",
-    //应该就这些
+    //新加的
     "me.weishu.kernelsu",
     "me.bmax.apatch",
-    "io.github.huskydg.magisk"
+    "io.github.huskydg.magisk",
+    "com.sukisu.ultra",
+    "com.rifsxd.ksunext",
+    "com.resukisu.resukisu"
 )
 
 val snapShotList = mutableStateListOf<Triple<IDetector, IDetector.Result?, Detail?>>(
@@ -49,6 +52,7 @@ val snapShotList = mutableStateListOf<Triple<IDetector, IDetector.Result?, Detai
     Triple(PMQueryIntentActivities(appContext, gettext("pmiq")[0]), null, null),
     Triple(FileDetection(appContext, false, "Libc " + gettext("filedet")[0]), null, null),
     Triple(FileDetection(appContext, true, "Syscall " + gettext("filedet")[0]), null, null),
+    Triple(ZeroCharacterDetect(appContext,gettext("zcd")[0]),null,null),
 //    Triple(StatFile(appContext," StatFile "+gettext("filedet")), null, null),
     Triple(XposedModules(appContext, gettext("xposed")[0], false), null, null),
     Triple(XposedModules(appContext, gettext("lspatch")[0], true), null, null),
@@ -84,8 +88,8 @@ fun MainPage(modifier: Modifier) {
             basicAppList.add(basicAppList.size, it)
         }
         runDetector(0, null)
-        for (i in 1..6) runDetector(i, basicAppList)
-        for (i in 7..12) runDetector(i, null)
+        for (i in 1..7) runDetector(i, basicAppList)
+        for (i in 8..13) runDetector(i, null)
     }
 
     Column(

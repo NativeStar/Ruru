@@ -176,6 +176,7 @@ fun gettext(string: String): Array<String> {
         "pmc" -> arrayOf(appContext.getString(R.string.pmc))
         "pmca" -> arrayOf(appContext.getString(R.string.pmca))
         "pmsa" -> arrayOf(appContext.getString(R.string.pmsa))
+        "zcd" ->arrayOf(appContext.getString(R.string.zcd))
         "pmiq" -> arrayOf(appContext.getString(R.string.pmiq))
         "xposed" -> arrayOf(appContext.getString(R.string.xposed))
         "lspatch" -> arrayOf(appContext.getString(R.string.lspatch))
