@@ -38,6 +38,7 @@ class AbnormalEnvironment(
         add(Pair("Xposed Edge", detectFile("/data/system/xedge")))
         add(Pair("Riru Clipboard", detectFile("/data/misc/clipboard")))
         add(Pair("privacyspace", detectFile("/data/system/cn.geektang.privacyspace")))
+        add(Pair("MoveCertificate Module",detectFile("/data/local/tmp/cert")))
         //Shizuku激活过产生的文件
         add(Pair("Shizuku File",detectFile("/data/local/tmp/shizuku")))
         var sufilenum=0
