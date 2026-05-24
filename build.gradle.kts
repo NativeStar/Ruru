@@ -23,8 +23,8 @@ fun String.execute(currentWorkingDir: File = file("./")): String {
     return String(byteOut.toByteArray()).trim()
 }
 
-val verCode by extra(16)
-var verName by extra("1.1.1")
+val verCode by extra(17)
+var verName by extra("1.2.0")
 
 val minSdkVer by extra(23)
 val targetSdkVer by extra(29)
