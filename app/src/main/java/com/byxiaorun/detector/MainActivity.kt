@@ -40,6 +40,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
@@ -61,6 +62,9 @@ import java.io.*
 import java.net.NetworkInterface
 import java.util.*
 import kotlin.collections.HashSet
+import androidx.core.content.edit
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 
 /**
  *Created by byxiaorun on 2022/4/20/0020.
@@ -93,14 +97,15 @@ class MainActivity : ComponentActivity() {
 private fun MainTopBar() {
     CenterAlignedTopAppBar(
         title = {
-            Text(stringResource(id = R.string.app_name)) },
-        actions ={
+            Text(stringResource(id = R.string.app_name))
+        },
+        actions = {
             IconButton(onClick = {
                 showCustomTargetSheet()
             }) {
                 Icon(
-                     imageVector = Icons.Filled.Edit,
-                     contentDescription = "list setting"
+                    imageVector = Icons.Filled.Edit,
+                    contentDescription = "list setting"
                 )
             }
         }
@@ -130,8 +135,8 @@ private fun AboutDialog(onDismiss: () -> Unit) {
         text = {
             Column(horizontalAlignment = Alignment.Start) {
                 CompositionLocalProvider(LocalTextStyle provides MaterialTheme.typography.bodyLarge) {
-                    Text(stringResource(R.string.app_name) +" V${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})")
-                    Text(stringResource(R.string.authored) +": Nullptr & byxiaorun & NativeStar")
+                    Text(stringResource(R.string.app_name) + " V${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})")
+                    Text(stringResource(R.string.authored) + ": Nullptr & byxiaorun & NativeStar")
                 }
                 Spacer(Modifier.height(10.dp))
                 val annotatedString = buildAnnotatedString {
@@ -152,13 +157,26 @@ private fun AboutDialog(onDismiss: () -> Unit) {
                         append(appContext.getString(R.string.telegram))
                     }
                 }
-                ClickableText(annotatedString, style = MaterialTheme.typography.bodyLarge) { offset ->
-                    annotatedString.getStringAnnotations("GitHub", offset, offset).firstOrNull()?.let {
-                        ContextCompat.startActivity(context, Intent(Intent.ACTION_VIEW, Uri.parse(it.item)), null)
-                    }
-                    annotatedString.getStringAnnotations("Telegram", offset, offset).firstOrNull()?.let {
-                        ContextCompat.startActivity(context, Intent(Intent.ACTION_VIEW, Uri.parse(it.item)), null)
-                    }
+                ClickableText(
+                    annotatedString,
+                    style = MaterialTheme.typography.bodyLarge
+                ) { offset ->
+                    annotatedString.getStringAnnotations("GitHub", offset, offset).firstOrNull()
+                        ?.let {
+                            ContextCompat.startActivity(
+                                context,
+                                Intent(Intent.ACTION_VIEW, Uri.parse(it.item)),
+                                null
+                            )
+                        }
+                    annotatedString.getStringAnnotations("Telegram", offset, offset).firstOrNull()
+                        ?.let {
+                            ContextCompat.startActivity(
+                                context,
+                                Intent(Intent.ACTION_VIEW, Uri.parse(it.item)),
+                                null
+                            )
+                        }
                 }
             }
         },
@@ -176,7 +194,7 @@ fun gettext(string: String): Array<String> {
         "pmc" -> arrayOf(appContext.getString(R.string.pmc))
         "pmca" -> arrayOf(appContext.getString(R.string.pmca))
         "pmsa" -> arrayOf(appContext.getString(R.string.pmsa))
-        "zcd" ->arrayOf(appContext.getString(R.string.zcd))
+        "zcd" -> arrayOf(appContext.getString(R.string.zcd))
         "pmiq" -> arrayOf(appContext.getString(R.string.pmiq))
         "xposed" -> arrayOf(appContext.getString(R.string.xposed))
         "lspatch" -> arrayOf(appContext.getString(R.string.lspatch))
@@ -190,100 +208,126 @@ fun gettext(string: String): Array<String> {
 
 
 private fun checkDisabled() {
-    MyApplication.accList = getFromAccessibilityManager()+ getFromSettingsSecure()
+    MyApplication.accList = getFromAccessibilityManager() + getFromSettingsSecure()
 }
 
 private fun getFromAccessibilityManager(): List<String> {
-        val accessibilityManager =
-            ContextCompat.getSystemService(appContext, AccessibilityManager::class.java)
-                ?: error("unreachable")
-        val serviceList: List<AccessibilityServiceInfo> =
-            accessibilityManager.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_ALL_MASK)
-                ?: emptyList()
-        val nameList = serviceList.map {
-            appContext.packageManager.getApplicationLabel(it.resolveInfo.serviceInfo.applicationInfo)
-                .toString()
-        }.toMutableList()
-        if (accessibilityManager.isEnabled) {
-            nameList.add("AccessibilityManager.isEnabled")
-        }
-        if (accessibilityManager.isTouchExplorationEnabled) {
-            nameList.add("AccessibilityManager.isTouchExplorationEnabled")
-        }
-        return nameList
+    val accessibilityManager =
+        ContextCompat.getSystemService(appContext, AccessibilityManager::class.java)
+            ?: error("unreachable")
+    val serviceList: List<AccessibilityServiceInfo> =
+        accessibilityManager.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_ALL_MASK)
+            ?: emptyList()
+    val nameList = serviceList.map {
+        appContext.packageManager.getApplicationLabel(it.resolveInfo.serviceInfo.applicationInfo)
+            .toString()
+    }.toMutableList()
+    if (accessibilityManager.isEnabled) {
+        nameList.add("AccessibilityManager.isEnabled")
+    }
+    if (accessibilityManager.isTouchExplorationEnabled) {
+        nameList.add("AccessibilityManager.isTouchExplorationEnabled")
+    }
+    return nameList
 }
 
-private fun getFromSettingsSecure():List<String> {
+private fun getFromSettingsSecure(): List<String> {
     try {
-        val settingValue= Settings.Secure.getString(
+        val settingValue = Settings.Secure.getString(
             appContext.contentResolver,
             Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES
         )
-        val nameList=if (settingValue.isNullOrEmpty()){
+        val nameList = if (settingValue.isNullOrEmpty()) {
             emptyList()
-        }else{
+        } else {
             settingValue.split(':')
         }.toMutableList()
-        val enabled = Settings.Secure.getInt(appContext.contentResolver, Settings.Secure.ACCESSIBILITY_ENABLED)
+        val enabled = Settings.Secure.getInt(
+            appContext.contentResolver,
+            Settings.Secure.ACCESSIBILITY_ENABLED
+        )
         if (enabled != 0) {
-            MyApplication.accenable =true
+            MyApplication.accenable = true
         }
         return nameList
-    }catch (e:Settings.SettingNotFoundException){
+    } catch (e: Settings.SettingNotFoundException) {
         return emptyList()
     }
 
 }
-fun showCustomTargetSheet(){
-    val sheet=BottomSheetDialog(topActivity)
+
+fun showCustomTargetSheet() {
+    val sheet = BottomSheetDialog(topActivity)
     sheet.setTitle("debug")
     //显示列表
-    val contentView=LayoutInflater.from(appContext).inflate(R.layout.package_list_layout,null);
+    val contentView = LayoutInflater.from(topActivity).inflate(R.layout.package_list_layout, null);
     val listView = contentView.findViewById<ListView>(R.id.packageList)
-    val pref= appContext.getSharedPreferences("custom_list",Context.MODE_PRIVATE)
-    val list=pref.getStringSet("list",HashSet<String>())?.toMutableList()
-    listView.adapter= ArrayAdapter(appContext,android.R.layout.simple_list_item_1,list!!)
-    listView.setOnItemClickListener(object:OnItemClickListener{
+    val pref = appContext.getSharedPreferences("custom_list", Context.MODE_PRIVATE)
+    val list = pref.getStringSet("list", HashSet<String>())?.toMutableList()
+    listView.adapter = ArrayAdapter(topActivity, android.R.layout.simple_list_item_1, list!!)
+    listView.setOnItemClickListener(object : OnItemClickListener {
         override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-            val pkgName=list[position] as String
+            val pkgName = list[position] as String
             list.remove(pkgName)
             //保存
-            pref.edit().putStringSet("list",java.util.HashSet(list)).apply()
+            pref.edit().putStringSet("list", java.util.HashSet(list)).apply()
             (listView.adapter as ArrayAdapter<String>).notifyDataSetChanged()
         }
     })
     contentView.findViewById<Button>(R.id.add_package_button).setOnClickListener {
-        val textInput = EditText(appContext)
-        textInput.hint = appContext.getString(R.string.input_package_name_hint)
-        AlertDialog.Builder(topActivity)
-            .setTitle(MyApplication.Companion.appContext.getString(R.string.dialog_add_package))
-            .setView(textInput)
+        val view = LayoutInflater.from(topActivity).inflate(R.layout.package_input_layout, null)
+        val textInput = view.findViewById<TextInputEditText>(R.id.package_name_input)
+        MaterialAlertDialogBuilder(topActivity).setTitle(
+            appContext.getString(
+                R.string.dialog_add_package
+            )
+        )
+            .setView(view)
             .setNeutralButton(appContext.getString(R.string.text_cancel), null)
-            .setPositiveButton(appContext.getString(R.string.text_add), object : DialogInterface.OnClickListener {
-                override fun onClick(dialog: DialogInterface?, which: Int) {
-                    val textRaw=textInput.text.toString()
-                    if (textRaw.isBlank()) return
-                    list.add(list.size,textRaw)
-                    pref.edit().putStringSet("list",java.util.HashSet(list)).apply()
-                    (listView.adapter as ArrayAdapter<String>).notifyDataSetChanged()
-                }
-            }).show()
+            .setPositiveButton(
+                appContext.getString(R.string.text_add),
+                object : DialogInterface.OnClickListener {
+                    override fun onClick(dialog: DialogInterface?, which: Int) {
+                        val textRaw = textInput.text.toString()
+                        if (textRaw.isBlank()) return
+                        list.add(list.size, textRaw)
+                        pref.edit { putStringSet("list", java.util.HashSet(list)) }
+                        (listView.adapter as ArrayAdapter<*>).notifyDataSetChanged()
+                    }
+                }).show()
     }
     sheet.setContentView(contentView)
     sheet.show()
 }
 
 fun checkSetting() {
-    if((Settings.Secure.getInt(appContext.contentResolver,Settings.Global.DEVELOPMENT_SETTINGS_ENABLED,0)==1)){ MyApplication.development_enable=true }
-    if((Settings.Secure.getInt(appContext.contentResolver,Settings.Global.ADB_ENABLED,0)==1
+    if ((Settings.Secure.getInt(
+            appContext.contentResolver,
+            Settings.Global.DEVELOPMENT_SETTINGS_ENABLED,
+            0
+        ) == 1)
+    ) {
+        MyApplication.development_enable = true
+    }
+    if ((Settings.Secure.getInt(appContext.contentResolver, Settings.Global.ADB_ENABLED, 0) == 1
 
-                )){ MyApplication.adbenable=true }
+                )
+    ) {
+        MyApplication.adbenable = true
+    }
 
     try {
-        vpn_connect = NetworkInterface.getNetworkInterfaces()?.toList()?.any { it.isUp && it.interfaceAddresses.isNotEmpty() && (it.name == "tun0" || it.name == "ppp0") } == true ||
-                (appContext.getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager).getNetworkInfo(17)?.isConnectedOrConnecting == true ||
-                (!System.getProperty("http.proxyHost").isNullOrEmpty() && (System.getProperty("http.proxyPort")?.toIntOrNull() ?: -1) != -1)
-    } catch (e: Throwable) { e.printStackTrace() }
+        vpn_connect = NetworkInterface.getNetworkInterfaces()?.toList()
+            ?.any { it.isUp && it.interfaceAddresses.isNotEmpty() && (it.name == "tun0" || it.name == "ppp0") } == true ||
+                (appContext.getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager).getNetworkInfo(
+                    17
+                )?.isConnectedOrConnecting == true ||
+                (!System.getProperty("http.proxyHost")
+                    .isNullOrEmpty() && (System.getProperty("http.proxyPort")?.toIntOrNull()
+                    ?: -1) != -1)
+    } catch (e: Throwable) {
+        e.printStackTrace()
+    }
 }
 
 
