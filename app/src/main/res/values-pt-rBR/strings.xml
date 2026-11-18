@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Ruru</string>
+    <string name="about">Sobre</string>
+    <string name="authored">Criado por</string>
+    <string name="source">Link do código-fonte</string>
+    <string name="telegram">Canal do Telegram</string>
+    <string name="not_found">Não encontrado</string>
+    <string name="found">Encontrado</string>
+    <string name="method">Método indisponível</string>
+    <string name="suspicious">Suspeito/Privacidade</string>
+    <string name="abnormal">Ambiente anormal</string>
+    <string name="filedet">Detecção de arquivos</string>
+    <string name="pmc">Comando PM</string>
+    <string name="pmca">APIs convencionais do PM</string>
+    <string name="pmsa">APIs diversas do PM</string>
+    <string name="pmiq">Consultas de intent do PM</string>
+    <string name="xposed">Módulos Xposed</string>
+    <string name="lspatch">App LSPatch</string>
+    <string name="magisk">App Magisk</string>
+    <string name="account">Conta</string>
+    <string name="accessibility">Serviços de acessibilidade</string>
+    <string-array name="settingprops">
+        <item>Propriedades de configuração</item>
+        <item>O modo de desenvolvedor está ATIVADO</item>
+        <item>O modo de depuração está ativado</item>
+        <item>VPN conectada/Proxy HTTP</item>
+    </string-array>
+    <string name="sheet_add_package">Adicionar pacote</string>
+    <string name="sheet_helper_text">Clique para remover o programa</string>
+    <string name="dialog_add_package">Adicionar pacote</string>
+    <string name="input_package_name_hint">Nome do pacote alvo</string>
+    <string name="text_cancel">Cancelar</string>
+    <string name="text_add">Adicionar</string>
+    <string name="zcd">Detecção de caractere de largura zero</string>
+</resources>
